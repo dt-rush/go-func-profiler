@@ -53,31 +53,31 @@ func NewLosslessProfiler() *losslessProfiler {
 }
 
 // Register a function for profiling with losslessProfiler
-func (p *losslessProfiler) RegisterFunc(name string) uint16 {
+func (p *losslessProfiler) RegisterFunc(name string) int {
 	id := p.base.RegisterFunc(name)
 	p.accum = append(p.accum, newLosslessAccum())
 	return id
 }
 
 // Clear the data associated with a function for losslessProfiler
-func (p *losslessProfiler) ClearData(id uint16) {
+func (p *losslessProfiler) ClearData(id int) {
 	p.accum[id] = newLosslessAccum()
 }
 
 // Start timing a function for losslessProfiler
-func (p *losslessProfiler) StartTimer(id uint16) {
+func (p *losslessProfiler) StartTimer(id int) {
 	p.base.StartTimer(id)
 }
 
 // Stop timing a function for losslessProfiler
-func (p *losslessProfiler) EndTimer(id uint16) {
+func (p *losslessProfiler) EndTimer(id int) {
 	ms := p.base.EndTimer(id)
 	times := &p.accum[id].times
 	*times = append(*times, ms)
 }
 
 // Get the average runtime for a function
-func (p *losslessProfiler) GetAvg(id uint16) float64 {
+func (p *losslessProfiler) GetAvg(id int) float64 {
 	sum := 0.0
 	count := len(p.accum[id].times)
 	for i := 0; i < count; i++ {
@@ -87,17 +87,17 @@ func (p *losslessProfiler) GetAvg(id uint16) float64 {
 }
 
 // Get the name of a given function
-func (p *losslessProfiler) GetName(id uint16) string {
+func (p *losslessProfiler) GetName(id int) string {
 	return p.base.GetName(id)
 }
 
 // Set the name of a given function
-func (p *losslessProfiler) SetName(id uint16, name string) {
+func (p *losslessProfiler) SetName(id int, name string) {
 	p.base.SetName(id, name)
 }
 
 // Return a string displaying the stats for a given function
-func (p *losslessProfiler) GetSummaryString(id uint16) string {
+func (p *losslessProfiler) GetSummaryString(id int) string {
 	// TODO: add more statistics
 	return fmt.Sprintf("Summary for %s: {Avg: %.3f}",
 		p.base.GetName(id),
